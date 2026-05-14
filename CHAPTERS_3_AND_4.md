@@ -603,28 +603,29 @@ The Administrator module is the most feature-rich part of the system. The admin 
 - **Notice Board:** Post and manage announcements visible to all students, with priority levels and expiry dates.
 - **Security Logs:** View the audit trail of all security events, including unauthorized access attempts, permission denials, and rate limit violations, with severity-based filtering.
 
-**Figure 4.3:** Admin/Student Login Page of the IMS
-*[INSERT SCREENSHOT - LOGIN PAGE]*
+**Figure 4.3:** Login Page of the IMS
 
-**Figure 4.4:** Administrator Dashboard with KPI Cards
-*[INSERT SCREENSHOT - ADMIN DASHBOARD]*
+![Figure 4.3: Login Page of the IMS](docs/screenshots/sign-in-page.png)
 
-**Figure 4.5:** Administrator User Management Interface
-*[INSERT SCREENSHOT - USER MANAGEMENT]*
+The login page presents a clean, centered form with email and password fields, a "Forgot password?" link, and role-based authentication supporting students, HoDs, secretaries, and administrators. The RMU logo is displayed prominently above the form, and the background features a photograph of the RMU campus.
 
-**Figure 4.6:** Internship Posting Management Page
-*[INSERT SCREENSHOT - INTERNSHIP MANAGEMENT]*
+### 4.3.5 Public Landing Page
 
-**Figure 4.7:** Application Review Queue with Approve/Reject Actions
-*[INSERT SCREENSHOT - APPLICATION REVIEW]*
+The public-facing landing page serves as the entry point for the IMS. It features a full-width hero section with the RMU campus background, a navigation bar with links to Internships, About, and Notices pages, and prominent "Get Started" and "View Partner Companies" call-to-action buttons. Below the hero, a statistics section displays key metrics (12+ Active Internships, 25+ Partner Companies, 500+ Students Placed, 92% Success Rate). The page also includes a Latest Announcements section showing pinned notices and a Partner Companies section listing available internship opportunities with company images, industry tags, and position details.
 
-**Figure 4.8:** Letter Request Management Interface
-*[INSERT SCREENSHOT - LETTER MANAGEMENT]*
+**Figure 4.4:** Public Landing Page Hero Section
 
-**Figure 4.9:** Analytics Dashboard with Charts
-*[INSERT SCREENSHOT - ANALYTICS DASHBOARD]*
+![Figure 4.4: Public Landing Page Hero Section](docs/screenshots/landing-page-hero.png)
 
-### 4.3.5 Student Portal
+**Figure 4.5:** Landing Page Statistics and Latest Announcements
+
+![Figure 4.5: Landing Page Statistics and Latest Announcements](docs/screenshots/landing-page-stats.png)
+
+**Figure 4.6:** Partner Companies and Internship Opportunities
+
+![Figure 4.6: Partner Companies and Internship Opportunities](docs/screenshots/partner-companies.png)
+
+### 4.3.6 Student Portal
 
 The Student Portal is built with Next.js and uses the `AuthProvider` context for authentication state management. The dashboard fetches all data concurrently from the Express API. The following code snippet shows the simplified structure of the student dashboard component:
 
@@ -657,38 +658,61 @@ export default function StudentDashboard() {
 **Code Snippet 4.3:** Student Dashboard Component (Next.js/React)
 
 Key student portal features include:
-- **Registration and Email Verification:** Students register with their RMU email and verify it via a 6-digit code or verification link.
-- **Profile Management:** Students can update their profile information, including phone, bio, skills, year of study, and avatar.
-- **Internship Catalogue:** A browsable, searchable listing of all active internship postings with filters for type and location.
+- **Registration and Email Verification:** Students register with their RMU email (@st.rmu.edu.gh) through a multi-step registration form (Step 1: Personal Information, Step 2: Academic Information, Step 3: Account Security) and verify it via a 6-digit code or verification link.
+- **Profile Management:** Students can update their profile information across three tabs (Personal Info, Academic, Security), including phone number, department, year of study, and student ID. Profile photos are replaced by initial-based avatars.
+- **Dashboard:** The student dashboard displays a personalized welcome message, available documents (approved letters with View, Download, and Print actions), quick action shortcuts (My Applications, Letter Requests, Notifications, Notices), and a "What needs attention" panel showing unread notifications, applications in progress, pending letter requests, and approved applications counts.
+- **Internship Catalogue:** A browsable, searchable listing of all active internship postings with filters for type and location. (Note: The internship directory is currently in preview mode with listings, search, and applications scheduled for the next release.)
 - **Application Submission:** Students can apply for internships with a cover letter and CV upload, with real-time file validation.
 - **Application Tracker:** Colour-coded status badges (Pending, Under Review, Approved, Rejected) allow students to track all their applications.
-- **Letter Requests:** Students can request introduction and placement letters, track their status, and download approved letters.
-- **Internship Requests:** Students can submit internship request forms with organization details for official placement.
-- **Notices and Notifications:** Students can view announcements and receive in-app notifications for all important events.
+- **Letter Requests:** A two-stage letter request system: Stage 1 requests a General Introduction Letter, and once approved, Stage 2 registers an official company placement with organization details. Each stage tracks its approval status independently.
+- **Notifications:** A dedicated notifications page with summary cards (Total, Unread, Read), filter tabs (All, Unread, Read), and actions (Refresh, Mark All Read, Clear All). Notifications are generated for events such as letter approvals, placement confirmations, and application status changes.
 - **Evaluations:** Students can view and acknowledge evaluations submitted by their company supervisors.
 
-**Figure 4.10:** Student Registration Page
-*[INSERT SCREENSHOT - REGISTRATION]*
+**Figure 4.7:** Student Registration Page (Step 1: Personal Information)
 
-**Figure 4.11:** Email Verification Page
-*[INSERT SCREENSHOT - EMAIL VERIFICATION]*
+![Figure 4.7: Student Registration Page](docs/screenshots/registration-page.png)
 
-**Figure 4.12:** Student Dashboard with Summary Cards and Recent Activity
-*[INSERT SCREENSHOT - STUDENT DASHBOARD]*
+The registration page features a 3-step wizard interface. Step 1 collects personal information (First Name, Last Name, Department, Student ID, Phone Number). The form enforces RMU student email format validation and provides placeholder guidance (e.g., "BMS1234567" for Student ID, "+233 XX XXX XXXX" for phone number).
 
-**Figure 4.13:** Internship Catalogue with Search and Filters
-*[INSERT SCREENSHOT - INTERNSHIP CATALOGUE]*
+**Figure 4.8:** Student Dashboard with Summary Cards and Quick Actions
 
-**Figure 4.14:** Application Submission Form with CV Upload
-*[INSERT SCREENSHOT - APPLICATION FORM]*
+![Figure 4.8: Student Dashboard](docs/screenshots/student-dashboard.png)
 
-**Figure 4.15:** Application Tracker with Colour-Coded Status Badges
-*[INSERT SCREENSHOT - APPLICATION TRACKER]*
+The student dashboard provides a comprehensive overview of the student's internship workflow. It includes an Available Documents section showing approved letters ready for use with View, Download, and Print actions. Quick Actions provide shortcuts to frequently used pages, and the "What needs attention" panel highlights pending items requiring action.
 
-**Figure 4.16:** Letter Request Page
-*[INSERT SCREENSHOT - LETTER REQUEST]*
+**Figure 4.9:** Internships Page (Preview Mode)
 
-### 4.3.6 Weekly Log Sheet Module
+![Figure 4.9: Internships Page](docs/screenshots/internships-page.png)
+
+**Figure 4.10:** Letter Request Page (Stage 1: General Introduction Letter - Approved)
+
+![Figure 4.10: Letter Request Page Stage 1](docs/screenshots/letter-requests-stage1.png)
+
+The Letter Request page implements a two-stage process. Stage 1 shows the General Introduction Letter request with its approval status, a "Download Letter" button for approved letters, the internship period, and student information. The informational banner explains how the two-stage process works.
+
+**Figure 4.11:** Letter Request Page (Stage 2: Official Placement - Active Placement)
+
+![Figure 4.11: Letter Request Page Stage 2](docs/screenshots/letter-requests-stage2.png)
+
+Stage 2 shows the Official Placement section. When an active placement is registered, it displays the placement status (Approved), the organization name (e.g., Gridco), the supervisor contact email, and the registration date. The "My Placements" section tracks all registered placements with their statuses.
+
+**Figure 4.12:** Student Notifications Page
+
+![Figure 4.12: Student Notifications Page](docs/screenshots/notifications-page.png)
+
+The notifications page provides a centralized view of all system notifications with summary statistics, filtering capabilities (All, Unread, Read), and batch actions (Mark All Read, Clear All). Each notification displays the event type, description, timestamp, and read status.
+
+**Figure 4.13:** Student Evaluations Page
+
+![Figure 4.13: Student Evaluations Page](docs/screenshots/evaluations-page.png)
+
+**Figure 4.14:** Student Profile Page
+
+![Figure 4.14: Student Profile Page](docs/screenshots/profile-page.png)
+
+The profile page allows students to manage their personal information and account settings across three tabs: Personal Info, Academic, and Security. It displays the student's initials-based avatar, email, department badge (e.g., BSc Computer Science), and verification status.
+
+### 4.3.7 Weekly Log Sheet Module
 
 The Weekly Log Sheet module allows students to maintain a structured record of their internship activities throughout their placement period. This feature addresses the need for students to document their daily tasks, skills learned, and supervisor feedback on a weekly basis. The module is accessible from the student dashboard and organizes entries chronologically by week number.
 
@@ -700,10 +724,7 @@ Key capabilities of the module:
 - **Supervisor Comments:** Each log entry includes a field for supervisor feedback and comments on the student's weekly performance.
 - **PDF Export:** Students can generate a compiled PDF of all weekly log entries for submission to their department, formatted as an official internship log book.
 
-**Figure 4.17:** Weekly Log Sheet Interface
-*[INSERT SCREENSHOT - WEEKLY LOG SHEET]*
-
-### 4.3.7 Automated Email Notification System
+### 4.3.8 Automated Email Notification System
 
 The email subsystem uses Nodemailer configured with SMTP credentials. The following snippet shows the verification email function from `backend/services/emailService.js`:
 
@@ -739,19 +760,13 @@ The email system sends notifications for the following events:
 - Official placement letter transmission to organizations
 - Daily reminder digests (scheduled via node-cron at midnight)
 
-**Figure 4.18:** Sample Verification Email in Student Inbox
-*[INSERT SCREENSHOT - EMAIL NOTIFICATION]*
-
-### 4.3.8 Supervisor Evaluation System
+### 4.3.9 Supervisor Evaluation System
 
 The evaluation system allows administrators to send evaluation forms to company supervisors through unique token links. Supervisors access the form without needing to register for an account. The form collects ratings on six criteria (work ethic, communication, technical skills, teamwork, punctuality, problem-solving) on a 1-5 scale, along with written comments and a final recommendation (Excellent, Good, Satisfactory, or Needs Improvement).
 
 The token is generated using UUID, stored in the `evaluation_tokens` table with an expiry date, and sent to the supervisor's email. When the supervisor clicks the link, the Next.js frontend loads the `/evaluate/[token]` page, validates the token through the Express API, and displays the evaluation form. On submission, the ratings and comments are stored in the `evaluations` table, and a notification is created for the student.
 
-**Figure 4.19:** Company Supervisor Evaluation Form (Token-Based Access)
-*[INSERT SCREENSHOT - EVALUATION FORM]*
-
-### 4.3.9 Official Placement Letter PDF Generation
+### 4.3.10 Official Placement Letter PDF Generation
 
 PDFKit generates official placement letters with the RMU crest, formatted headers, student details, organization information, and department-specific signatures. The generated PDFs can be downloaded by administrators and emailed directly to organizations. Each letter includes an auto-generated reference number (format: LR-YYYYMMDD-XXXXX) and a 6-digit verification code for document authenticity.
 
@@ -764,9 +779,6 @@ The following is a summary of the PDF structure generated by `backend/services/p
 - Placement details section (organization, department/role, start and end dates)
 - Closing paragraph requesting supervision cooperation
 - Signature block with department-specific digital signature image
-
-**Figure 4.20:** Sample Official Placement Letter Generated by PDFKit
-*[INSERT SCREENSHOT/IMAGE - GENERATED PDF LETTER]*
 
 ## 4.4 Testing
 
@@ -873,7 +885,7 @@ UAT was conducted with 15 participants: 6 students, 4 administrative staff, and 
 
 An overall SUS score of 80.5 places the system in the "Good" to "Excellent" range, exceeding the project's target threshold of 70. Students found the internship catalogue and application tracker particularly intuitive. Administrators valued the letter management and PDF generation features. Company representatives appreciated the simplicity of the token-based evaluation form, which required no registration.
 
-**Figure 4.21:** Bar Chart of SUS Scores by User Group
+**Figure 4.15:** Bar Chart of SUS Scores by User Group
 *(Bar chart: Students 83.2, Admin Staff 78.5, Company Reps 79.8, Overall 80.5. Dashed line at 70 for target threshold)*
 
 ### 4.4.5 Performance Testing
@@ -888,7 +900,7 @@ An overall SUS score of 80.5 places the system in the "Good" to "Excellent" rang
 
 All tests passed within the 2-second average response time target. At 100 concurrent users, a small number of requests exceeded the 2-second threshold but the system remained stable with a negligible error rate of 0.5%.
 
-**Figure 4.22:** Response Time vs Concurrent Users
+**Figure 4.16:** Response Time vs Concurrent Users
 *(Line chart: X-axis = Users (10, 25, 50, 100), Y-axis = Response Time (seconds). Dashed line at 2.0s threshold)*
 
 ## 4.5 Results
@@ -918,8 +930,8 @@ The system was deployed as follows:
 5. **Email:** Nodemailer SMTP credentials configured for production email delivery.
 6. **Smoke Test:** A final end-to-end test was conducted on production URLs to verify all modules function correctly.
 
-**Figure 4.23:** Deployment Architecture of the IMS
-*(Show: Client Browser -> Vercel (Next.js Frontend) -> Express.js API (Cloud Hosting) -> Supabase (PostgreSQL + Storage). Also: Nodemailer -> SMTP Server, GitHub -> Vercel CI/CD)*
+**Figure 4.17:** Deployment Architecture of the IMS
+*(Client Browser -> Vercel (Next.js Frontend) -> Express.js API (Cloud Hosting) -> Supabase (PostgreSQL + Storage). Also: Nodemailer -> SMTP Server, GitHub -> Vercel CI/CD)*
 
 ## 4.7 Summary
 
