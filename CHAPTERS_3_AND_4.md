@@ -206,37 +206,69 @@ The following tables provide detailed descriptions of key use cases.
 | Main Flow | 1. Supervisor clicks the token link in their email. 2. System loads the logbook review page (no login required). 3. System validates the token and displays all weekly entries. 4. Supervisor reviews daily activities and student remarks. 5. Supervisor enters their full name, remarks, and recommendation. 6. Supervisor submits the review. 7. System stores the review and notifies the HoD for final approval. |
 | Postcondition | Supervisor review is saved; logbook status changes to "Supervisor Reviewed"; HoD is notified |
 
-### 3.3.3 Activity Diagrams
+### 3.3.3 Role-Based Flowcharts
+
+The following flowcharts illustrate the step-by-step workflow for each user role, corresponding to the use case diagrams above. Each flowchart shows the sequential and decision-based processes a user follows when interacting with the system.
+
+**Student Workflow Flowchart:**
+The Student flowchart shows the complete journey from registration through to logbook finalisation. After registering and verifying their email, the student browses internships, requests an introduction letter (Stage 1), downloads the approved PDF, registers their official placement (Stage 2), completes the weekly log sheet book, and finalises it for supervisor review.
+
+**Figure 3.6:** Student Workflow Flowchart
+
+![Figure 3.6: Student Workflow Flowchart](docs/diagrams/flowchart_student.png)
+
+**Administrator Workflow Flowchart:**
+The Administrator flowchart shows the oversight workflow including dashboard review, user management, internship posting, letter request approval with PDF generation, placement management, evaluation token dispatch, logbook monitoring, and notice management.
+
+**Figure 3.7:** Administrator Workflow Flowchart
+
+![Figure 3.7: Administrator Workflow Flowchart](docs/diagrams/flowchart_admin.png)
+
+**HoD / Secretary Workflow Flowchart:**
+The HoD/Secretary flowchart includes the force password change on first login, department dashboard review, letter request and placement review, weekly logbook approval/rejection, digital signature management, and evaluation viewing.
+
+**Figure 3.8:** HoD / Secretary Workflow Flowchart
+
+![Figure 3.8: HoD / Secretary Workflow Flowchart](docs/diagrams/flowchart_hod.png)
+
+**External Evaluator Workflow Flowchart:**
+The External Evaluator flowchart shows the token-based access flow: receiving an email link, token validation, viewing student details, completing the evaluation form, and submitting ratings and comments — all without requiring an account.
+
+**Figure 3.9:** External Evaluator Workflow Flowchart
+
+![Figure 3.9: External Evaluator Workflow Flowchart](docs/diagrams/flowchart_evaluator.png)
+
+### 3.3.4 Activity Diagrams
 
 Activity diagrams model the dynamic workflow of the system's processes, showing the sequence of activities, decision points, and parallel flows.
 
-**Figure 3.6:** Activity Diagram for the Letter Request and Placement Workflow
+**Figure 3.10:** Activity Diagram for the Letter Request and Placement Workflow
 
-![Figure 3.6: Activity Diagram for the Letter Request and Placement Workflow](docs/diagrams/flowchart_letter_placement.png)
+![Figure 3.10: Activity Diagram for the Letter Request and Placement Workflow](docs/diagrams/flowchart_letter_placement.png)
 
-**Figure 3.7:** Activity Diagram for the Weekly Logbook Workflow
+**Figure 3.11:** Activity Diagram for the Weekly Logbook Workflow
 
-![Figure 3.7: Activity Diagram for the Weekly Logbook Workflow](docs/diagrams/flowchart_logbook.png)
+![Figure 3.11: Activity Diagram for the Weekly Logbook Workflow](docs/diagrams/flowchart_logbook.png)
 
-### 3.3.4 Sequence Diagrams
+### 3.3.5 Sequence Diagrams
 
 Sequence diagrams show the time-ordered interactions between system objects and actors.
 
-**Figure 3.8:** Sequence Diagram for Letter Request and PDF Generation
+**Figure 3.12:** Sequence Diagram for Letter Request and PDF Generation
 
-![Figure 3.8: Sequence Diagram for Letter Request and PDF Generation](docs/diagrams/sequence_letter.png)
+![Figure 3.12: Sequence Diagram for Letter Request and PDF Generation](docs/diagrams/sequence_letter.png)
 
-**Figure 3.9:** Sequence Diagram for Supervisor Evaluation via Token Link
+**Figure 3.13:** Sequence Diagram for Supervisor Evaluation via Token Link
 
-![Figure 3.9: Sequence Diagram for Supervisor Evaluation via Token Link](docs/diagrams/sequence_evaluation.png)
+![Figure 3.13: Sequence Diagram for Supervisor Evaluation via Token Link](docs/diagrams/sequence_evaluation.png)
 
-### 3.3.5 Class Diagram
+### 3.3.6 Class Diagram
 
 The class diagram represents the static structure of the system, showing the key models (entities), their attributes, and relationships as implemented in the Supabase data layer.
 
-**Figure 3.10:** Entity-Relationship Diagram of the IMS Data Models
+**Figure 3.14:** Entity-Relationship Diagram of the IMS Data Models
 
-![Figure 3.10: Entity-Relationship Diagram of the IMS Data Models](docs/diagrams/er_diagram.png)
+![Figure 3.14: Entity-Relationship Diagram of the IMS Data Models](docs/diagrams/er_diagram.png)
 
 The database schema includes the following key tables:
 - **user_profiles** – all user account data with must_change_password flag for staff accounts
@@ -289,7 +321,7 @@ Security was treated as a core concern throughout the system design. The followi
 
 **Security Event Logging:** A security service (`securityService.js`) logs all security-related events including unauthorized access attempts, permission denials, rate limit violations, and suspicious activity. Events are stored with severity levels (low, medium, high) and are viewable by administrators through the Security Logs page.
 
-**Figure 3.11:** Multi-Layered Security Architecture of the IMS
+**Figure 3.15:** Multi-Layered Security Architecture of the IMS
 
 The security architecture consists of four layers:
 - **Layer 1 (Client):** HTTPS, JWT token in Authorization header, client-side form validation (Zod)
@@ -335,7 +367,7 @@ The **Agile Software Development Methodology** was selected for this project, us
 | Sprint 5 | Weeks 9-10 | Evaluation and Advanced Features | Token-based supervisor evaluation system, analytics dashboard with Recharts charts, HoD/Secretary portal with digital signatures, security logging, weekly log sheet book module with supervisor token review |
 | Sprint 6 | Weeks 11-12 | Testing, Refinement, and Deployment | Unit testing, integration testing, security testing, UAT with 15 participants, performance testing, deployment to Vercel and cloud hosting, final documentation |
 
-**Figure 3.12:** Agile Sprint Cycle
+**Figure 3.16:** Agile Sprint Cycle
 
 The Agile sprint cycle follows the iterative loop: Plan → Design → Develop → Test → Review → Deploy → Feedback → (repeat for next sprint).
 
@@ -351,25 +383,25 @@ The RMU IMS uses a modern three-tier client-server architecture with a decoupled
 
 **Data Layer (Database):** Supabase (PostgreSQL) serves as the database backend, providing a managed PostgreSQL instance with built-in REST API capabilities, storage for file uploads, and row-level security. The backend communicates with Supabase using the `@supabase/supabase-js` client library with the service role key for full administrative access.
 
-**Figure 3.13:** Three-Tier Architecture of the RMU IMS
+**Figure 3.17:** Three-Tier Architecture of the RMU IMS
 
-![Figure 3.13: Three-Tier Architecture of the RMU IMS](docs/diagrams/architecture.png)
+![Figure 3.17: Three-Tier Architecture of the RMU IMS](docs/diagrams/architecture.png)
 
 ### 3.7.2 UI Design (Wireframes)
 
 The user interface was designed with usability and role-based differentiation as the main objectives. Wireframes were created during the design phase for each user role.
 
-**Figure 3.14:** Student Dashboard (Implementation)
+**Figure 3.18:** Student Dashboard (Implementation)
 
-![Figure 3.14: Student Dashboard](docs/screenshots/student-dashboard-new.png)
+![Figure 3.18: Student Dashboard](docs/screenshots/student-dashboard-new.png)
 
-**Figure 3.15:** Administrator Dashboard (Implementation)
+**Figure 3.19:** Administrator Dashboard (Implementation)
 
-![Figure 3.15: Administrator Dashboard](docs/screenshots/admin-dashboard.png)
+![Figure 3.19: Administrator Dashboard](docs/screenshots/admin-dashboard.png)
 
-**Figure 3.16:** HoD Department Dashboard (Implementation)
+**Figure 3.20:** HoD Department Dashboard (Implementation)
 
-![Figure 3.16: HoD Department Dashboard](docs/screenshots/hod-dashboard.png)
+![Figure 3.20: HoD Department Dashboard](docs/screenshots/hod-dashboard.png)
 
 ### 3.7.3 DB Design
 
@@ -407,9 +439,9 @@ The database is hosted on Supabase (PostgreSQL) and designed following relationa
 - A WeeklyLogbook has many WeeklyLogEntries (One-to-Many) and one WeeklyLogReview (One-to-One).
 - A User (HoD/Secretary) can have one active StaffSignature per department (One-to-One active).
 
-**Figure 3.17:** Entity-Relationship Diagram of the RMU IMS Database
+**Figure 3.21:** Entity-Relationship Diagram of the RMU IMS Database
 
-![Figure 3.17: Entity-Relationship Diagram of the RMU IMS Database](docs/diagrams/er_diagram.png)
+![Figure 3.21: Entity-Relationship Diagram of the RMU IMS Database](docs/diagrams/er_diagram.png)
 
 ## 3.8 Development Tools and Technologies
 
