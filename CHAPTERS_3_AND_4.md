@@ -143,25 +143,29 @@ Use Case diagrams capture the functional requirements of the system by showing t
 The Student use case diagram shows how students interact with the system. Key use cases include: Register Account (with email verification), Login, Complete Profile, Browse Internship Catalogue (with search and filters), Submit Application (with CV upload), Track Application Status, Request Introduction Letter, Request Placement Letter, Submit Internship Request, Complete Weekly Log Sheet, View Notices, View Notifications, View and Acknowledge Evaluations, and Logout.
 
 **Figure 3.2:** Use Case Diagram for the Student Module
-*(Show the Student actor connected to: Register, Verify Email, Login, Browse Internships, Apply for Internship, Track Applications, Request Letters, Submit Internship Request, Complete Log Sheet, View Notices, View Notifications, View Evaluations, Manage Profile, Logout)*
+
+![Figure 3.2: Use Case Diagram for the Student Module](docs/diagrams/usecase_student.png)
 
 **Use Case Diagram for the Administrator Module (Backend):**
 The Administrator use case diagram captures the full oversight capabilities. Key use cases include: Login, View Dashboard KPIs, Post/Manage Internship Listings, Review/Approve/Reject Applications, Manage Users, Review/Approve/Reject Letter Requests, Generate Official Placement Letters (PDF), Post Notices, Send Evaluation Forms to Supervisors, View Evaluations, Manage Placements, View Analytics, View Security Logs, and Logout.
 
 **Figure 3.3:** Use Case Diagram for the Administrator Module
-*(Show the Administrator actor connected to: Login, Dashboard, Manage Internships, Review Applications, Manage Users, Manage Letters, Generate PDFs, Post Notices, Send Evaluations, View Analytics, Security Logs, Manage Placements, Logout)*
+
+![Figure 3.3: Use Case Diagram for the Administrator Module](docs/diagrams/usecase_admin.png)
 
 **Use Case Diagram for the HoD / Secretary Module:**
 The HoD / Secretary use case diagram shows how Heads of Department and departmental Secretaries interact with the system. Both roles share identical access privileges, including a department-scoped dashboard for viewing applications, evaluations, and placement records within their department.
 
 **Figure 3.4:** Use Case Diagram for the HoD / Secretary Module
-*(Show the HoD/Secretary actor connected to: Login, Department Dashboard, View Department Applications, View Department Evaluations, View Department Placements, Logout)*
+
+![Figure 3.4: Use Case Diagram for the HoD / Secretary Module](docs/diagrams/usecase_hod.png)
 
 **Use Case Diagram for the External Evaluator:**
 The External Evaluator (Company Supervisor) use case diagram is simpler, showing how supervisors interact with the system solely through token-based access. Company supervisors receive a unique evaluation link via email, use it to access the evaluation form without needing a system account, rate the student on multiple criteria, and submit the completed evaluation.
 
 **Figure 3.5:** Use Case Diagram for the External Evaluator
-*(Show the Company Supervisor actor connected to: Access via Token Link, Complete Evaluation Form, Submit Evaluation)*
+
+![Figure 3.5: Use Case Diagram for the External Evaluator](docs/diagrams/usecase_evaluator.png)
 
 ### 3.3.2 Use Case Descriptions
 
@@ -199,40 +203,51 @@ The following tables provide detailed descriptions of key use cases.
 
 Activity diagrams model the dynamic workflow of the system's processes, showing the sequence of activities, decision points, and parallel flows.
 
-**Figure 3.6:** Activity Diagram for the Internship Application Workflow
-*(Show: Student Login -> Browse Catalogue -> Select Posting -> Fill Application Form -> Upload CV -> [Decision: Valid file?] -> Save to Supabase -> Upload CV to Supabase Storage -> Send Notification Email via Nodemailer -> Admin Reviews -> [Decision: Approve/Reject?] -> Update Status in Database -> Notify Student via Email and In-App Notification)*
+**Figure 3.6:** Activity Diagram for the Letter Request and Placement Workflow
 
-**Figure 3.7:** Activity Diagram for the Letter Request and Placement Workflow
-*(Show: Student Requests General Letter -> Admin Reviews -> [Approve/Reject] -> If Approved: Student Submits Placement Details -> Admin Reviews Placement -> Generate Official PDF Letter via PDFKit -> Email Letter to Organization via Nodemailer -> Track Placement Status)*
+![Figure 3.6: Activity Diagram for the Letter Request and Placement Workflow](docs/diagrams/flowchart_letter_placement.png)
+
+**Figure 3.7:** Activity Diagram for the Weekly Logbook Workflow
+
+![Figure 3.7: Activity Diagram for the Weekly Logbook Workflow](docs/diagrams/flowchart_logbook.png)
 
 ### 3.3.4 Sequence Diagrams
 
 Sequence diagrams show the time-ordered interactions between system objects and actors.
 
-**Figure 3.8:** Sequence Diagram for Student Application Submission
-*(Show: Student (Browser/Next.js) -> API Call (Axios with JWT Bearer Token) -> Express Router (/api/applications) -> Auth Middleware (JWT verify) -> applicationController -> Multer (file upload validation) -> Supabase Client (PostgreSQL insert into applications table) -> Supabase Storage (CV file upload) -> Nodemailer (send notification email to admin) -> JSON Response back to Next.js client)*
+**Figure 3.8:** Sequence Diagram for Letter Request and PDF Generation
+
+![Figure 3.8: Sequence Diagram for Letter Request and PDF Generation](docs/diagrams/sequence_letter.png)
 
 **Figure 3.9:** Sequence Diagram for Supervisor Evaluation via Token Link
-*(Show: Admin creates evaluation -> Nodemailer sends token link to supervisor email -> Supervisor clicks link -> Next.js /evaluate/[token] page loads -> React form rendered -> Supervisor fills and submits form -> Axios POST to Express /api/evaluate -> Express validates token via EvaluationToken model -> Supabase stores evaluation ratings and comments -> Notification created for student in notifications table -> Success response to supervisor)*
+
+![Figure 3.9: Sequence Diagram for Supervisor Evaluation via Token Link](docs/diagrams/sequence_evaluation.png)
 
 ### 3.3.5 Class Diagram
 
 The class diagram represents the static structure of the system, showing the key models (entities), their attributes, and relationships as implemented in the Supabase data layer.
 
-**Figure 3.10:** Class Diagram of the IMS Data Models
-*(Show classes based on actual models:*
-- *User (id: UUID, email: TEXT, password: TEXT, role: TEXT, firstName: TEXT, lastName: TEXT, studentId: TEXT, phone: TEXT, department: TEXT, program: TEXT, yearOfStudy: INTEGER, avatar: TEXT, bio: TEXT, skills: JSONB, isEmailVerified: BOOLEAN, isActive: BOOLEAN, createdAt: TIMESTAMPTZ, updatedAt: TIMESTAMPTZ)*
-- *Internship (id: UUID, title: TEXT, company: TEXT, location: TEXT, type: TEXT, duration: TEXT, description: TEXT, requirements: JSONB, responsibilities: JSONB, stipend: TEXT, deadline: TIMESTAMPTZ, slots: INTEGER, status: TEXT, postedBy: UUID, postedAt: TIMESTAMPTZ)*
-- *Application (id: UUID, studentId: UUID, internshipId: UUID, coverLetter: TEXT, cvUrl: TEXT, status: TEXT, feedback: TEXT, reviewedBy: UUID, appliedAt: TIMESTAMPTZ, reviewedAt: TIMESTAMPTZ)*
-- *LetterRequest (id: UUID, studentId: UUID, requestType: TEXT, status: TEXT, companyName: TEXT, companyContact: TEXT, referenceNumber: TEXT, verificationCode: TEXT, adminNotes: TEXT)*
-- *InternshipPlacement (id: UUID, studentId: UUID, organizationName: TEXT, organizationEmail: TEXT, supervisorName: TEXT, supervisorPosition: TEXT, departmentRole: TEXT, status: TEXT, internshipStartDate: DATE, internshipEndDate: DATE)*
-- *Evaluation (id: UUID, studentId: UUID, internshipId: UUID, placementId: UUID, evaluationType: TEXT, workEthicRating: INTEGER, communicationRating: INTEGER, technicalSkillsRating: INTEGER, teamworkRating: INTEGER, punctualityRating: INTEGER, problemSolvingRating: INTEGER, supervisorComments: TEXT, finalRecommendation: TEXT)*
-- *EvaluationToken (id: UUID, evaluationId: UUID, token: TEXT, isUsed: BOOLEAN, expiresAt: TIMESTAMPTZ)*
-- *Notice (id: UUID, title: TEXT, content: TEXT, priority: TEXT, targetAudience: TEXT, isActive: BOOLEAN, expiresAt: TIMESTAMPTZ, createdBy: UUID)*
-- *Notification (id: UUID, userId: UUID, type: TEXT, title: TEXT, message: TEXT, isRead: BOOLEAN, relatedId: UUID)*
-- *Logbook (id: UUID, studentId: UUID, weekNumber: INTEGER, startDate: DATE, endDate: DATE, dailyActivities: JSONB, learningOutcomes: TEXT, status: TEXT, supervisorComments: TEXT)*
+**Figure 3.10:** Entity-Relationship Diagram of the IMS Data Models
 
-*Relationships: User 1--* Application, User 1--* LetterRequest, User 1--* InternshipPlacement, Internship 1--* Application, User 1--* Evaluation, Evaluation 1--1 EvaluationToken, User 1--* Logbook, User 1--* Notice (created by), User 1--* Notification)*
+![Figure 3.10: Entity-Relationship Diagram of the IMS Data Models](docs/diagrams/er_diagram.png)
+
+The updated schema includes:
+- **user_profiles** – all user account data with must_change_password for staff
+- **internships** – internship postings
+- **applications** – student applications with CV uploads
+- **letter_requests** – letter requests with signature_snapshot (JSONB)
+- **internship_placements** – official placements with supervisor_email and signature_snapshot
+- **evaluations** – supervisor evaluation ratings
+- **evaluation_tokens** – token-based evaluation access
+- **weekly_logbooks** – logbook per student per placement (status: draft, ongoing, submitted_final, supervisor_reviewed, hod_approved, rejected)
+- **weekly_log_entries** – weekly entries within a logbook (activities as JSONB)
+- **weekly_log_reviews** – supervisor and HoD reviews (linked 1:1 to logbook)
+- **weekly_log_supervisor_tokens** – token access for external logbook review
+- **staff_signatures** – digital signatures for HoD/Secretary (role-based, department-scoped)
+- **notices** – announcements with target_audience
+- **notifications** – user notifications
+
+*Key Relationships: User 1--* Application, User 1--* LetterRequest, User 1--* InternshipPlacement, Internship 1--* Application, User 1--* Evaluation, Evaluation 1--1 EvaluationToken, InternshipPlacement 1--1 WeeklyLogbook, WeeklyLogbook 1--* WeeklyLogEntries, WeeklyLogbook 1--1 WeeklyLogReview, User 1--* StaffSignature, User 1--* Notice (created by), User 1--* Notification*
 
 ## 3.4 Non-Functional Requirements
 
@@ -269,7 +284,12 @@ Security was treated as a core concern throughout the system design. The followi
 **Security Event Logging:** A security service (`securityService.js`) logs all security-related events including unauthorized access attempts, permission denials, rate limit violations, and suspicious activity. Events are stored with severity levels (low, medium, high) and are viewable by administrators through the Security Logs page.
 
 **Figure 3.11:** Multi-Layered Security Architecture of the IMS
-*(Layer 1 (Client): HTTPS, JWT token in Authorization header, client-side form validation. Layer 2 (API Gateway): Helmet.js security headers, CORS policy, Rate Limiting. Layer 3 (Application): JWT verification, RBAC middleware, express-validator, Multer file validation. Layer 4 (Database): Supabase Row-Level Security, parameterized queries via Supabase SDK, bcrypt password hashing)*
+
+The security architecture consists of four layers:
+- **Layer 1 (Client):** HTTPS, JWT token in Authorization header, client-side form validation (Zod)
+- **Layer 2 (API Gateway):** Helmet.js security headers, CORS policy, Rate Limiting (express-rate-limit)
+- **Layer 3 (Application):** JWT verification, RBAC middleware, express-validator, Multer file validation, staff password enforcement
+- **Layer 4 (Database):** Supabase Row-Level Security, parameterized queries via Supabase SDK, bcrypt password hashing
 
 ## 3.6 Project Methods
 
@@ -309,8 +329,9 @@ The **Agile Software Development Methodology** was selected for this project, us
 | Sprint 5 | Weeks 9-10 | Evaluation and Advanced Features | Token-based supervisor evaluation system, analytics dashboard with Recharts charts, HoD/Secretary portal, security logging, weekly log sheet module |
 | Sprint 6 | Weeks 11-12 | Testing, Refinement, and Deployment | Unit testing, integration testing, security testing, UAT with 15 participants, performance testing, deployment to Vercel and cloud hosting, final documentation |
 
-**Figure 3.12:** Agile Sprint Cycle Diagram
-*(Circular diagram: Plan -> Design -> Develop -> Test -> Review -> Deploy -> Feedback -> repeat)*
+**Figure 3.12:** Agile Sprint Cycle
+
+The Agile sprint cycle follows the iterative loop: Plan → Design → Develop → Test → Review → Deploy → Feedback → (repeat for next sprint).
 
 ## 3.7 Project Design Consideration (Logical Designs)
 
@@ -325,20 +346,24 @@ The RMU IMS uses a modern three-tier client-server architecture with a decoupled
 **Data Layer (Database):** Supabase (PostgreSQL) serves as the database backend, providing a managed PostgreSQL instance with built-in REST API capabilities, storage for file uploads, and row-level security. The backend communicates with Supabase using the `@supabase/supabase-js` client library with the service role key for full administrative access.
 
 **Figure 3.13:** Three-Tier Architecture of the RMU IMS
-*(Top: Presentation Layer - Next.js 16 / React 19, Tailwind CSS 4, shadcn/ui, Recharts. Middle: Application Logic Layer - Node.js / Express.js, JWT Auth, Multer, Nodemailer, PDFKit, node-cron, Helmet, CORS. Bottom: Data Layer - Supabase PostgreSQL, Supabase Storage. Arrows: Frontend <-> REST API (JSON/JWT) <-> Backend <-> Supabase Client <-> PostgreSQL)*
+
+![Figure 3.13: Three-Tier Architecture of the RMU IMS](docs/diagrams/architecture.png)
 
 ### 3.7.2 UI Design (Wireframes)
 
 The user interface was designed with usability and role-based differentiation as the main objectives. Wireframes were created during the design phase for each user role.
 
-**Figure 3.14:** Wireframe for the Student Dashboard
-*(Show: Top navbar with logo and navigation, Summary cards (Total Applications, Approved, Pending, Rejected), Recent Applications table, Notices section, Letter Requests section, Internship Requests section)*
+**Figure 3.14:** Student Dashboard (Implementation)
 
-**Figure 3.15:** Wireframe for the Administrator Dashboard
-*(Show: Sidebar navigation (Dashboard, Users, Internships, Applications, Letters, Evaluations, Placements, Notices, Notifications, Analytics, Security), Main content area with KPI cards and recent activity feed)*
+![Figure 3.14: Student Dashboard](docs/screenshots/student-dashboard-new.png)
 
-**Figure 3.16:** Wireframe for the Internship Catalogue Page
-*(Show: Search bar at top, filter dropdowns (type, location), paginated list of internship cards with title, company, location, deadline, and Apply button)*
+**Figure 3.15:** Administrator Dashboard (Implementation)
+
+![Figure 3.15: Administrator Dashboard](docs/screenshots/admin-dashboard.png)
+
+**Figure 3.16:** HoD Department Dashboard (Implementation)
+
+![Figure 3.16: HoD Department Dashboard](docs/screenshots/hod-dashboard.png)
 
 ### 3.7.3 DB Design
 
@@ -372,10 +397,8 @@ The database is hosted on Supabase (PostgreSQL) and designed following relationa
 - A User can have many Logbook entries (One-to-Many).
 
 **Figure 3.17:** Entity-Relationship Diagram of the RMU IMS Database
-*(Show all entities with attributes, primary keys, foreign keys, and relationships using ER notation)*
 
-**Figure 3.18:** Database Schema of the RMU IMS (Supabase/PostgreSQL)
-*(Show relational schema with all tables, columns, data types, primary keys, foreign keys, and constraints)*
+![Figure 3.17: Entity-Relationship Diagram of the RMU IMS Database](docs/diagrams/er_diagram.png)
 
 ## 3.8 Development Tools and Technologies
 
@@ -483,7 +506,8 @@ Step 14: END
 ```
 
 **Figure 4.1:** Flowchart for User Interface Implementation
-*(Start -> Init Next.js -> Create Auth Pages -> Detect User Role -> [Student/Admin/HoD?] -> Render Role-Specific Layout -> Build Pages with shadcn/ui -> Fetch Data via API -> Test Responsiveness -> End)*
+
+![Figure 4.1: Flowchart for User Interface Implementation](docs/diagrams/flowchart_ui.png)
 
 ### 4.2.2 Algorithm for Database Development
 
@@ -504,7 +528,8 @@ Step 12: END
 ```
 
 **Figure 4.2:** Flowchart for Database Development
-*(Start -> Create Supabase Project -> Write Migration SQL Files -> Define PKs/FKs -> Add Indexes -> Create Triggers -> Enable RLS -> Configure Storage -> Create Model Layer in Node.js -> Verify Integrity -> End)*
+
+![Figure 4.2: Flowchart for Database Development](docs/diagrams/flowchart_db.png)
 
 ## 4.3 Construction
 
@@ -604,25 +629,16 @@ The Administrator module is the most feature-rich part of the system. The admin 
 - **Security Logs:** View the audit trail of all security events, including unauthorized access attempts, permission denials, and rate limit violations, with severity-based filtering.
 
 **Figure 4.3:** Admin/Student Login Page of the IMS
-*[INSERT SCREENSHOT - LOGIN PAGE]*
 
-**Figure 4.4:** Administrator Dashboard with KPI Cards
-*[INSERT SCREENSHOT - ADMIN DASHBOARD]*
+![Figure 4.3: Login Page](docs/screenshots/sign-in-page.png)
 
-**Figure 4.5:** Administrator User Management Interface
-*[INSERT SCREENSHOT - USER MANAGEMENT]*
+**Figure 4.4:** Administrator Dashboard with KPI Cards and Quick Actions
 
-**Figure 4.6:** Internship Posting Management Page
-*[INSERT SCREENSHOT - INTERNSHIP MANAGEMENT]*
+![Figure 4.4: Administrator Dashboard](docs/screenshots/admin-dashboard.png)
 
-**Figure 4.7:** Application Review Queue with Approve/Reject Actions
-*[INSERT SCREENSHOT - APPLICATION REVIEW]*
+**Figure 4.5:** HoD Department Dashboard with Quick Actions and Key Figures
 
-**Figure 4.8:** Letter Request Management Interface
-*[INSERT SCREENSHOT - LETTER MANAGEMENT]*
-
-**Figure 4.9:** Analytics Dashboard with Charts
-*[INSERT SCREENSHOT - ANALYTICS DASHBOARD]*
+![Figure 4.5: HoD Department Dashboard](docs/screenshots/hod-dashboard.png)
 
 ### 4.3.5 Student Portal
 
@@ -667,26 +683,37 @@ Key student portal features include:
 - **Notices and Notifications:** Students can view announcements and receive in-app notifications for all important events.
 - **Evaluations:** Students can view and acknowledge evaluations submitted by their company supervisors.
 
-**Figure 4.10:** Student Registration Page
-*[INSERT SCREENSHOT - REGISTRATION]*
+**Figure 4.6:** Student Registration Page (Step 1)
 
-**Figure 4.11:** Email Verification Page
-*[INSERT SCREENSHOT - EMAIL VERIFICATION]*
+![Figure 4.6: Student Registration](docs/screenshots/registration-page.png)
 
-**Figure 4.12:** Student Dashboard with Summary Cards and Recent Activity
-*[INSERT SCREENSHOT - STUDENT DASHBOARD]*
+**Figure 4.7:** Student Dashboard with Overview Cards and Available Documents
 
-**Figure 4.13:** Internship Catalogue with Search and Filters
-*[INSERT SCREENSHOT - INTERNSHIP CATALOGUE]*
+![Figure 4.7: Student Dashboard](docs/screenshots/student-dashboard-new.png)
 
-**Figure 4.14:** Application Submission Form with CV Upload
-*[INSERT SCREENSHOT - APPLICATION FORM]*
+**Figure 4.8:** Internship Catalogue with Search and Filters
 
-**Figure 4.15:** Application Tracker with Colour-Coded Status Badges
-*[INSERT SCREENSHOT - APPLICATION TRACKER]*
+![Figure 4.8: Internship Catalogue](docs/screenshots/internships-page.png)
 
-**Figure 4.16:** Letter Request Page
-*[INSERT SCREENSHOT - LETTER REQUEST]*
+**Figure 4.9:** Internship Letter Requests Page (Two-Stage Process)
+
+![Figure 4.9: Letter Requests](docs/screenshots/letter-requests-full.png)
+
+**Figure 4.10:** Stage 2 Official Placement (Read-Only after Logsheet Submission)
+
+![Figure 4.10: Stage 2 Placement Locked](docs/screenshots/stage2-placement-locked.png)
+
+**Figure 4.11:** Generated PDF Introduction Letter with Digital Signature and QR Code
+
+![Figure 4.11: Generated PDF Letter](docs/screenshots/generated-pdf-letter.png)
+
+**Figure 4.12:** Student Notifications Page
+
+![Figure 4.12: Notifications](docs/screenshots/notifications-page.png)
+
+**Figure 4.13:** Student Profile Page
+
+![Figure 4.13: Profile Page](docs/screenshots/profile-page.png)
 
 ### 4.3.6 Weekly Log Sheet Module
 
@@ -700,8 +727,9 @@ Key capabilities of the module:
 - **Supervisor Comments:** Each log entry includes a field for supervisor feedback and comments on the student's weekly performance.
 - **PDF Export:** Students can generate a compiled PDF of all weekly log entries for submission to their department, formatted as an official internship log book.
 
-**Figure 4.17:** Weekly Log Sheet Interface
-*[INSERT SCREENSHOT - WEEKLY LOG SHEET]*
+**Figure 4.14:** Weekly Log Sheet Book (HoD Approved, Entries Locked)
+
+![Figure 4.14: Weekly Log Sheet Book](docs/screenshots/weekly-logbook.png)
 
 ### 4.3.7 Automated Email Notification System
 
@@ -739,8 +767,9 @@ The email system sends notifications for the following events:
 - Official placement letter transmission to organizations
 - Daily reminder digests (scheduled via node-cron at midnight)
 
-**Figure 4.18:** Sample Verification Email in Student Inbox
-*[INSERT SCREENSHOT - EMAIL NOTIFICATION]*
+**Figure 4.15:** Student Evaluations Page showing Supervisor Evaluation (New)
+
+![Figure 4.15: Student Evaluations](docs/screenshots/evaluations-supervisor.png)
 
 ### 4.3.8 Supervisor Evaluation System
 
@@ -748,8 +777,9 @@ The evaluation system allows administrators to send evaluation forms to company 
 
 The token is generated using UUID, stored in the `evaluation_tokens` table with an expiry date, and sent to the supervisor's email. When the supervisor clicks the link, the Next.js frontend loads the `/evaluate/[token]` page, validates the token through the Express API, and displays the evaluation form. On submission, the ratings and comments are stored in the `evaluations` table, and a notification is created for the student.
 
-**Figure 4.19:** Company Supervisor Evaluation Form (Token-Based Access)
-*[INSERT SCREENSHOT - EVALUATION FORM]*
+**Figure 4.16:** Public Landing Page Hero Section
+
+![Figure 4.16: Landing Page](docs/screenshots/landing-page-hero.png)
 
 ### 4.3.9 Official Placement Letter PDF Generation
 
@@ -765,8 +795,9 @@ The following is a summary of the PDF structure generated by `backend/services/p
 - Closing paragraph requesting supervision cooperation
 - Signature block with department-specific digital signature image
 
-**Figure 4.20:** Sample Official Placement Letter Generated by PDFKit
-*[INSERT SCREENSHOT/IMAGE - GENERATED PDF LETTER]*
+**Figure 4.17:** Partner Companies Page
+
+![Figure 4.17: Partner Companies](docs/screenshots/partner-companies.png)
 
 ## 4.4 Testing
 
@@ -873,8 +904,7 @@ UAT was conducted with 15 participants: 6 students, 4 administrative staff, and 
 
 An overall SUS score of 80.5 places the system in the "Good" to "Excellent" range, exceeding the project's target threshold of 70. Students found the internship catalogue and application tracker particularly intuitive. Administrators valued the letter management and PDF generation features. Company representatives appreciated the simplicity of the token-based evaluation form, which required no registration.
 
-**Figure 4.21:** Bar Chart of SUS Scores by User Group
-*(Bar chart: Students 83.2, Admin Staff 78.5, Company Reps 79.8, Overall 80.5. Dashed line at 70 for target threshold)*
+The SUS scoring confirms the system meets usability standards across all user groups.
 
 ### 4.4.5 Performance Testing
 
@@ -886,10 +916,7 @@ An overall SUS score of 80.5 places the system in the "Good" to "Excellent" rang
 | 50 | 0.9s | 1.8s | 0% | Pass |
 | 100 | 1.4s | 2.5s | 0.5% | Pass |
 
-All tests passed within the 2-second average response time target. At 100 concurrent users, a small number of requests exceeded the 2-second threshold but the system remained stable with a negligible error rate of 0.5%.
-
-**Figure 4.22:** Response Time vs Concurrent Users
-*(Line chart: X-axis = Users (10, 25, 50, 100), Y-axis = Response Time (seconds). Dashed line at 2.0s threshold)*
+All tests passed within the 2-second average response time target. At 100 concurrent users, the system remained stable with a negligible error rate of 0.5%.
 
 ## 4.5 Results
 
@@ -918,8 +945,9 @@ The system was deployed as follows:
 5. **Email:** Nodemailer SMTP credentials configured for production email delivery.
 6. **Smoke Test:** A final end-to-end test was conducted on production URLs to verify all modules function correctly.
 
-**Figure 4.23:** Deployment Architecture of the IMS
-*(Show: Client Browser -> Vercel (Next.js Frontend) -> Express.js API (Cloud Hosting) -> Supabase (PostgreSQL + Storage). Also: Nodemailer -> SMTP Server, GitHub -> Vercel CI/CD)*
+**Figure 4.18:** Deployment Architecture of the IMS
+
+![Figure 4.18: Deployment Architecture](docs/diagrams/deployment.png)
 
 ## 4.7 Summary
 
